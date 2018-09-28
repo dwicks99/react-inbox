@@ -1,91 +1,86 @@
 import React from 'react';
-import Message from '../components/Message';
+import { Message } from '../components/Message';
 import { shallow } from 'enzyme'
 
 describe('Message', () => {
-  it('renders without crashing', () => {
-    const expectedSubject = {
+
+  const shallowMessage = (overrides) => {
+    const defaultProps = {
       subject: 'Hello World',
       read: false,
       selected: false,
       labels: [],
       starred: false
     }
-    const m = shallow(<Message message={expectedSubject} />)
 
-    expect(m.find('div.message')).toHaveLength(1)
-    expect(m.find('div.message').text()).toEqual(expectedSubject.subject)
-    expect(m.find('input[type="checkbox"]')).toHaveLength(1)
-    expect(m.find('i.star.fa.fa-star-o')).toHaveLength(1)
-  });
+    const props = Object.assign({}, defaultProps, overrides)
 
-  it('message renders with read style', () => {
-    const expected = {
-      subject: 'Hello World',
-      read: true,
-      selected: false,
-      labels: []
-    }
-    const m = shallow(<Message message={expected} />)
+    const starSpy = jest.fn()
+    return shallow(<Message message={props} toggleStar={starSpy} />)
+  }
 
-    expect(m.find('div.message.read')).toHaveLength(1)
-  });
+  describe('Rendering', () => {
 
-  it('message renders with unread style', () => {
-    const expected = {
-      subject: 'Hello World',
-      read: false,
-      selected: false,
-      labels: []
-    }
-    const m = shallow(<Message message={expected} />)
+    it('renders without crashing', () => {
+      const subject = "Assert Test"
+      const m = shallowMessage({ subject: subject })
 
-    expect(m.find('div.message.unread')).toHaveLength(1)
-  });
+      expect(m.find('div.message')).toHaveLength(1)
+      expect(m.find('div.message').text()).toEqual(subject)
+      expect(m.find('input[type="checkbox"]')).toHaveLength(1)
+      expect(m.find('i.star.fa.fa-star-o')).toHaveLength(1)
+    });
 
-  it('if message is selected should have style and checked box', () => {
+    it('message renders with read style', () => {
+      const m = shallowMessage({ read: true })
 
-    const messageData = {
-      subject: 'Hello World',
-      read: true,
-      selected: true,
-      labels: []
-    }
+      expect(m.find('div.message.read')).toHaveLength(1)
+    });
 
-    const m = shallow(<Message message={messageData} />)
+    it('message renders with unread style', () => {
+      const m = shallowMessage()
 
-    expect(m.find('div.message.selected')).toHaveLength(1)
-    let checkbox = m.find({ type: 'checkbox' });
-    expect(checkbox.props().checked).toBeTruthy();
-  });
+      expect(m.find('div.message.unread')).toHaveLength(1)
+    });
 
-  it('if message has labels, should render labels', () => {
+    it('if message is selected should have style and checked box', () => {
 
-    const messageData = {
-      subject: 'Hello World',
-      read: true,
-      selected: true,
-      labels: ['beginner', 'overdone']
-    }
+      const m = shallowMessage({ selected: true })
 
-    const m = shallow(<Message message={messageData} />)
+      expect(m.find('div.message.selected')).toHaveLength(1)
+      let checkbox = m.find({ type: 'checkbox' });
+      expect(checkbox.props().checked).toBeTruthy();
+    });
 
-    expect(m.find('span.label.label-warning')).toHaveLength(messageData.labels.length)
-  });
+    it('if message has labels, should render labels', () => {
+
+      const expectedLabels = ['simple', 'overdone']
+      const m = shallowMessage({ labels: expectedLabels })
+
+      expect(m.find('span.label.label-warning')).toHaveLength(expectedLabels.length)
+    });
 
 
-  it('if message is starred should have filled in star', () => {
+    it('if message is starred should have filled in star', () => {
 
-    const messageData = {
-      subject: 'Hello World',
-      read: true,
-      selected: true,
-      labels: ['beginner', 'overdone'],
-      starred: true
-    }
+      const m = shallowMessage({ starred: true })
 
-    const m = shallow(<Message message={messageData} />)
+      expect(m.find('i.star.fa.fa-star')).toHaveLength(1)
+    });
+  })
 
-    expect(m.find('i.star.fa.fa-star')).toHaveLength(1)
-  });
+  describe('behavior', () => {
+    it('toggles star power', () => {
+      //setup
+      const m = shallowMessage()
+      expect(m.find('i.star.fa.fa-star')).toHaveLength(0)
+      expect(m.find('i.star.fa.fa-star-o')).toHaveLength(1)
+
+      //exercise
+      m.find('i.star.fa.fa-star-o').simulate('click')
+
+      //assert
+      expect(m.instance().props.toggleStar).toHaveBeenCalledTimes(1)
+    })
+  })
 })

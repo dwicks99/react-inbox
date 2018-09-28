@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { toggleMessageStar } from '../actions/actions'
 
 export class Message extends Component {
 
@@ -11,7 +13,7 @@ export class Message extends Component {
                             <input type="checkbox" checked={this.props.message.selected ? 'checked' : ''} />
                         </div>
                         <div className="col-xs-2">
-                            <i className={'star fa fa-star' + (this.props.message.starred ? '' : '-o')}></i>
+                            <i onClick={() => { this.props.toggleStar(this.props.message.id) }} className={'star fa fa-star' + (this.props.message.starred ? '' : '-o')}></i>
                         </div>
                     </div>
                 </div>
@@ -27,4 +29,14 @@ export class Message extends Component {
     }
 }
 
-export default Message
+const mapStateToProps = (state) => {
+    return {}
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        //'personDoUpdate': (person) => dispatch(personDoUpdate(person)),
+        toggleStar: (id) => dispatch(toggleMessageStar(id)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Message)
