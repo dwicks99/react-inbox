@@ -5,7 +5,7 @@ import {shallow} from 'enzyme'
 describe('Reducer', () => {
 
     it('initial state is present', () => {
-        const expectedState = {Messages:[{subject: "Galvanize is very awesome"}, {subject: "Understanding sarcasm in the workplace"}]}
+        const expectedState = {Messages:[{subject: "Galvanize is very awesome", read: true}, {subject: "Understanding sarcasm in the workplace", read: false}]}
 
         expect(reducer(undefined, {})).toEqual(expectedState)
     });

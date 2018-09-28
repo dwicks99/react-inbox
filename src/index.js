@@ -10,7 +10,7 @@ import 'font-awesome/css/font-awesome.css';
 
 import './index.css';
 import App from './App';
-//import registerServiceWorker from './registerServiceWorker';
+import registerServiceWorker from './registerServiceWorker';
 import reducer from '../src/reducers/index'
 
 const store = createStore(reducer)
@@ -20,4 +20,4 @@ ReactDOM.render(
         <App />
     </Provider>, 
     document.getElementById('root'));
-//registerServiceWorker();
+registerServiceWorker();
