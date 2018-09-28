@@ -5,7 +5,7 @@ const initialState = {
         {
             subject: "Galvanize is very awesome",
             read: true,
-            selected: true,
+            selected: false,
             labels: ['hello'],
             starred: false,
             id: 0
@@ -21,7 +21,7 @@ const initialState = {
         {
             subject: "Making the most of your compost",
             read: false,
-            selected: true,
+            selected: false,
             labels: [],
             starred: false,
             id: 2
@@ -40,6 +40,9 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.ToggleMsgStar: return doToggleMsgStar(state, action.payload)
+        case ActionTypes.ToggleMsgSelected: return doToggleMsgSelected(state, action.payload)
+        case ActionTypes.SelectAll: return doSelectAll(state)
+        case ActionTypes.SelectSome: return doSelectSome(state)
         default: return state;
     }
 }
@@ -47,6 +50,24 @@ const reducer = (state = initialState, action) => {
 const doToggleMsgStar = (state, id) => {
     const newState = JSON.parse(JSON.stringify(state))
     newState.Messages[id].starred = !state.Messages[id].starred
+    return newState
+}
+
+const doToggleMsgSelected = (state, id) => {
+    const newState = JSON.parse(JSON.stringify(state))
+    newState.Messages[id].selected = !state.Messages[id].selected
+    return newState
+}
+
+const doSelectAll = (state) => {
+    const newState = JSON.parse(JSON.stringify(state))
+    newState.Messages = newState.Messages.map(m => ({ ...m, selected: true }))
+    return newState
+}
+
+const doSelectSome = (state) => {
+    const newState = JSON.parse(JSON.stringify(state))
+    newState.Messages = newState.Messages.map(m => ({ ...m, selected: true }))
     return newState
 }
 

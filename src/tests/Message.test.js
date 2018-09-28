@@ -16,7 +16,7 @@ describe('Message', () => {
     const props = Object.assign({}, defaultProps, overrides)
 
     const starSpy = jest.fn()
-    return shallow(<Message message={props} toggleStar={starSpy} />)
+    return shallow(<Message message={props} toggleStar={starSpy} toggleSelected={jest.fn()} />)
   }
 
   describe('Rendering', () => {
@@ -81,6 +81,17 @@ describe('Message', () => {
 
       //assert
       expect(m.instance().props.toggleStar).toHaveBeenCalledTimes(1)
+    })
+
+    it('toggles box checking', () => {
+
+      const m = shallowMessage({ selected: true })
+
+      let checkbox = m.find({ type: 'checkbox' });
+      checkbox.simulate('click')
+
+      expect(m.instance().props.toggleSelected).toHaveBeenCalledTimes(1)
+
     })
   })
 })
